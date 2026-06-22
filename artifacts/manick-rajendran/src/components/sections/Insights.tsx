@@ -1,62 +1,103 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 
-const TOPICS = [
-  { title: "Healthcare Digital Transformation", category: "Digital Transformation" },
-  { title: "Telemedicine Deployment at Scale", category: "Telemedicine" },
-  { title: "Hospital Operations Excellence", category: "Hospital Operations" },
-  { title: "Healthcare Interoperability Standards", category: "Standards & Policy" },
-  { title: "AI in Revenue Cycle Management", category: "Digital Transformation" },
-  { title: "Startup Mentorship in HealthTech", category: "Mentorship" },
-  { title: "Leadership in Healthcare Reform", category: "Hospital Operations" },
-  { title: "Lean Sigma for Healthcare", category: "Hospital Operations" },
-  { title: "STEM Education Innovation", category: "Mentorship" },
+const SPEAKING = [
+  {
+    topic: "Telemedicine at National Scale",
+    venue: "PM's National Telemedicine Initiative",
+    category: "Telemedicine",
+    desc: "Architecture and deployment of telemedicine platforms reaching 500,000+ clinicians across India, Tanzania, and Malawi."
+  },
+  {
+    topic: "Healthcare Interoperability Standards",
+    venue: "HITSP / ISO / CCHIT",
+    category: "Standards & Policy",
+    desc: "Practical frameworks for EHR interoperability — from HITSP Co-Chairman to ISO Delegation Head at international standards meetings."
+  },
+  {
+    topic: "AI in Revenue Cycle Management",
+    venue: "Healthcare Operations Forums",
+    category: "Digital Transformation",
+    desc: "How AI and automation are reshaping medical billing, denial management, and Remote Patient Monitoring revenue lines."
+  },
+  {
+    topic: "Hospital Turnarounds & Operational Excellence",
+    venue: "Hospital Administration Conferences",
+    category: "Hospital Operations",
+    desc: "Lessons from leading a 2,100-bed academic hospital and a multi-facility group through growth, restructuring, and transformation."
+  },
+  {
+    topic: "Digital Health Strategy for Emerging Markets",
+    venue: "Global Health Technology Summits",
+    category: "Digital Transformation",
+    desc: "Building robust digital health infrastructure across resource-constrained settings — India, Africa, and Southeast Asia."
+  },
+  {
+    topic: "HealthTech Startup Mentorship & Scaling",
+    venue: "Velammal Knowledge Park & Academic Institutions",
+    category: "Mentorship",
+    desc: "From genomics to cardiac telemedicine — guiding HealthTech founders through product-market fit, clinical validation, and exit."
+  },
 ];
+
+const CATEGORY_COLOR: Record<string, string> = {
+  "Telemedicine": "text-accent",
+  "Standards & Policy": "text-secondary",
+  "Digital Transformation": "text-primary",
+  "Hospital Operations": "text-orange-600",
+  "Mentorship": "text-purple-600",
+};
 
 export function Insights() {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section id="insights" className="py-24 bg-background" ref={ref}>
-      <div className="container mx-auto px-4 md:px-8">
+    <section id="insights" className="py-20 bg-card" ref={ref}>
+      <div className="container mx-auto px-6 md:px-10 max-w-[1440px]">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14"
         >
           <div>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-4">Thought Leadership</h2>
+            <span className="text-xs font-sans font-semibold tracking-[0.22em] text-muted-foreground uppercase">
+              Expertise in Practice
+            </span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mt-2 mb-4">
+              Speaking &amp; Conference Topics
+            </h2>
             <div className="w-12 h-1 bg-primary" />
           </div>
-          <p className="text-muted-foreground font-sans max-w-md text-lg">
-            Perspectives and strategies shaping the future of global healthcare.
+          <p className="text-muted-foreground font-sans max-w-md text-lg leading-relaxed">
+            Perspectives drawn from frontline leadership — not theory, but three decades of applied practice.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {TOPICS.map((topic, i) => (
-            <motion.a
-              href="#"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {SPEAKING.map((item, i) => (
+            <motion.div
               key={i}
-              className="group block bg-card border border-border p-8 rounded-sm hover:border-primary/40 hover:shadow-md transition-all duration-300 h-full flex flex-col"
+              className="group bg-background border border-border p-7 hover:border-primary/40 hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col"
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              onClick={(e) => e.preventDefault()}
+              transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
+              data-testid={`insight-card-${i}`}
             >
-              <div className="text-xs font-bold text-accent uppercase tracking-widest mb-4">
-                {topic.category}
-              </div>
-              <h3 className="text-xl font-serif font-bold text-foreground mb-8 group-hover:text-primary transition-colors leading-tight">
-                {topic.title}
+              <span className={`text-xs font-bold uppercase tracking-widest mb-3 ${CATEGORY_COLOR[item.category] ?? "text-muted-foreground"}`}>
+                {item.category}
+              </span>
+              <h3 className="text-lg font-serif font-bold text-foreground mb-2 leading-snug group-hover:text-primary transition-colors">
+                {item.topic}
               </h3>
-              <div className="mt-auto flex items-center text-sm font-medium text-primary uppercase tracking-wide gap-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                Explore Topic <ArrowRight className="w-4 h-4" />
-              </div>
-            </motion.a>
+              <p className="text-xs font-sans text-muted-foreground/70 uppercase tracking-wide mb-4 font-medium">
+                {item.venue}
+              </p>
+              <p className="text-sm text-muted-foreground font-sans leading-relaxed mt-auto">
+                {item.desc}
+              </p>
+            </motion.div>
           ))}
         </div>
       </div>

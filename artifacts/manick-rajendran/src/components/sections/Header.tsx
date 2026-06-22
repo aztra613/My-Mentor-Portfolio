@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -8,121 +8,159 @@ const NAV_ITEMS = [
   { label: "Experience", href: "#experience" },
   { label: "Expertise", href: "#expertise" },
   { label: "Impact", href: "#impact" },
+  { label: "Standards", href: "#standards" },
   { label: "Mentorship", href: "#mentorship" },
-  { label: "Insights", href: "#insights" },
+  { label: "Contact", href: "#contact" },
 ];
 
-export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+function useActiveSection(ids: string[]) {
+  const [active, setActive] = useState("");
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observers: IntersectionObserver[] = [];
+
+    ids.forEach((id) => {
+      const el = document.querySelector(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActive(id);
+        },
+        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, [ids]);
+
+  return active;
+}
+
+export function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const sectionIds = NAV_ITEMS.map((n) => n.href);
+  const activeSection = useActiveSection(sectionIds);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const scrollTo = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
-    setMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      const offset = 80;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
+    setMobileOpen(false);
+    const el = document.querySelector(href);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: "smooth" });
     }
   };
 
   return (
-    <header 
+    <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? "h-[60px] bg-background/80 backdrop-blur-md border-b shadow-sm" : "h-[80px] bg-transparent"
+        scrolled
+          ? "h-[60px] bg-background/85 backdrop-blur-md border-b border-border/50 shadow-sm"
+          : "h-[80px] bg-background border-b border-transparent"
       }`}
       data-testid="header"
     >
-      <div className="container mx-auto h-full px-4 md:px-8 flex items-center justify-between">
-        <a 
-          href="#" 
-          onClick={(e) => scrollToSection(e, "#top")}
-          className="flex items-center gap-3 z-50 group"
+      <div className="container mx-auto h-full px-6 md:px-10 max-w-[1440px] flex items-center justify-between">
+        {/* Logo */}
+        <a
+          href="#"
+          onClick={(e) => scrollTo(e, "#top")}
+          className="flex items-center gap-3 group z-50"
           data-testid="link-logo"
         >
-          <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded group-hover:bg-secondary transition-colors">
-            <span className="font-serif font-bold text-lg tracking-wider">MR</span>
+          <div className="flex items-center justify-center w-9 h-9 bg-primary text-primary-foreground rounded-sm group-hover:bg-secondary transition-colors duration-200 shadow-sm">
+            <span className="font-serif font-bold text-base tracking-wider">MR</span>
           </div>
-          <span className="font-sans font-medium text-lg text-foreground tracking-tight hidden sm:block">
+          <span className="font-sans font-semibold text-base text-foreground tracking-tight hidden sm:block">
             Manick Rajendran
           </span>
         </a>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8">
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              onClick={(e) => scrollToSection(e, item.href)}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              data-testid={`link-nav-${item.label.toLowerCase()}`}
-            >
-              {item.label}
-            </a>
-          ))}
-          <Button 
-            onClick={(e) => scrollToSection(e as any, "#contact")}
-            className="rounded-full px-6 font-medium bg-primary hover:bg-secondary transition-colors"
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-7">
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeSection === item.href;
+            return (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={(e) => scrollTo(e, item.href)}
+                className="relative text-sm font-medium transition-colors duration-200 py-1"
+                style={{ color: isActive ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))" }}
+                data-testid={`link-nav-${item.label.toLowerCase()}`}
+              >
+                {item.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-indicator"
+                    className="absolute -bottom-0.5 left-0 right-0 h-px bg-primary"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </a>
+            );
+          })}
+          <Button
+            onClick={(e) => scrollTo(e as any, "#contact")}
+            className="ml-2 rounded-full px-6 h-9 text-sm font-medium bg-primary hover:bg-secondary transition-colors duration-200 shadow-sm"
             data-testid="btn-nav-contact"
           >
             Schedule Consultation
           </Button>
         </nav>
 
-        {/* Mobile Menu Toggle */}
-        <button 
-          className="lg:hidden z-50 text-foreground"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        {/* Mobile toggle */}
+        <button
+          className="lg:hidden z-50 text-foreground p-1"
+          onClick={() => setMobileOpen((o) => !o)}
           aria-label="Toggle menu"
           data-testid="btn-mobile-menu"
         >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
 
-        {/* Mobile Navigation Drawer */}
-        <div 
-          className={`fixed inset-0 bg-background/95 backdrop-blur-sm z-40 lg:hidden transition-transform duration-300 flex flex-col pt-24 px-6 ${
-            mobileMenuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          <nav className="flex flex-col gap-6 items-start">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => scrollToSection(e, item.href)}
-                className="text-2xl font-serif text-foreground"
-              >
-                {item.label}
-              </a>
-            ))}
-            <div className="mt-8 w-full border-t border-border pt-8">
-              <Button 
-                onClick={(e) => scrollToSection(e as any, "#contact")}
-                className="w-full rounded-full bg-primary py-6 text-lg"
-              >
-                Schedule Consultation
-              </Button>
-            </div>
-          </nav>
-        </div>
+        {/* Mobile drawer */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              className="fixed inset-0 bg-background z-40 lg:hidden flex flex-col pt-24 px-8"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <nav className="flex flex-col gap-6">
+                {NAV_ITEMS.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    onClick={(e) => scrollTo(e, item.href)}
+                    className="text-2xl font-serif font-bold text-foreground hover:text-primary transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <div className="mt-6 pt-6 border-t border-border">
+                  <Button
+                    onClick={(e) => scrollTo(e as any, "#contact")}
+                    className="w-full rounded-full bg-primary h-14 text-lg"
+                  >
+                    Schedule Consultation
+                  </Button>
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );
