@@ -17,23 +17,23 @@ const SPEAKING = [
   {
     topic: "AI in Revenue Cycle Management",
     venue: "Healthcare Operations Forums",
-    category: "Digital Transformation",
+    category: "Healthcare Finance",
     desc: "How AI and automation are reshaping medical billing, denial management, and Remote Patient Monitoring revenue lines."
   },
   {
-    topic: "Hospital Turnarounds & Operational Excellence",
+    topic: "Hospital Leadership & Transformation",
     venue: "Hospital Administration Conferences",
     category: "Hospital Operations",
-    desc: "Lessons from leading a 2,100-bed academic hospital and a multi-facility group through growth, restructuring, and transformation."
+    desc: "Lessons from leading a 2,100-bed academic hospital and a multi-facility group through growth, restructuring, and sustained improvement."
   },
   {
-    topic: "Digital Health Strategy for Emerging Markets",
+    topic: "Digital Health in Emerging Markets",
     venue: "Global Health Technology Summits",
-    category: "Digital Transformation",
+    category: "Global Health",
     desc: "Building robust digital health infrastructure across resource-constrained settings — India, Africa, and Southeast Asia."
   },
   {
-    topic: "HealthTech Startup Mentorship & Scaling",
+    topic: "HealthTech Mentorship & Scaling",
     venue: "Velammal Knowledge Park & Academic Institutions",
     category: "Mentorship",
     desc: "From genomics to cardiac telemedicine — guiding HealthTech founders through product-market fit, clinical validation, and exit."
@@ -43,8 +43,9 @@ const SPEAKING = [
 const CATEGORY_COLOR: Record<string, string> = {
   "Telemedicine": "text-accent",
   "Standards & Policy": "text-secondary",
-  "Digital Transformation": "text-primary",
+  "Healthcare Finance": "text-primary",
   "Hospital Operations": "text-orange-600",
+  "Global Health": "text-teal-600",
   "Mentorship": "text-purple-600",
 };
 

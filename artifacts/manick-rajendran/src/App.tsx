@@ -2,8 +2,8 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { Header } from "@/components/sections/Header";
 import { Hero } from "@/components/sections/Hero";
 import { CurrentRoles } from "@/components/sections/CurrentRoles";
-import { TrustedBy } from "@/components/sections/TrustedBy";
 import { About } from "@/components/sections/About";
+import { Philosophy } from "@/components/sections/Philosophy";
 import { Timeline } from "@/components/sections/Timeline";
 import { GlobalImpact } from "@/components/sections/GlobalImpact";
 import { Expertise } from "@/components/sections/Expertise";
@@ -11,7 +11,6 @@ import { Achievements } from "@/components/sections/Achievements";
 import { LegacyImpact } from "@/components/sections/LegacyImpact";
 import { Standards } from "@/components/sections/Standards";
 import { Mentorship } from "@/components/sections/Mentorship";
-import { Philosophy } from "@/components/sections/Philosophy";
 import { Insights } from "@/components/sections/Insights";
 import { Advisory } from "@/components/sections/Advisory";
 import { Contact } from "@/components/sections/Contact";
@@ -25,8 +24,8 @@ function App() {
       <main>
         <Hero />
         <CurrentRoles />
-        <TrustedBy />
         <About />
+        <Philosophy />
         <Timeline />
         <GlobalImpact />
         <Expertise />
@@ -34,7 +33,6 @@ function App() {
         <LegacyImpact />
         <Standards />
         <Mentorship />
-        <Philosophy />
         <Insights />
         <Advisory />
         <Contact />

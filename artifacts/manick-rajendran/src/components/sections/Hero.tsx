@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import portraitImg from "@assets/1711126551904_1782102099986.jfif";
 
 const metrics = [
-  { label: "Years Experience", value: 35, suffix: "+" },
   { label: "Countries", value: 7, suffix: "+" },
-  { label: "Doctors Impacted", value: 500, suffix: "K+" },
-  { label: "Hospital Beds", value: 2100, suffix: "+" }
+  { label: "Telemedicine Clinicians", value: 500, suffix: "K+" },
+  { label: "Hospital Beds Led", value: 2100, suffix: "+" },
 ];
 
 function MetricItem({ value, suffix, label, delay = 0 }: { value: number; suffix: string; label: string; delay?: number }) {
@@ -88,28 +87,21 @@ export function Hero() {
               className="text-4xl md:text-5xl lg:text-[3.6rem] xl:text-[4rem] font-serif font-bold text-foreground leading-[1.08] mb-7 tracking-tight"
               {...fadeUp(0.6)}
             >
-              Transforming Healthcare.{" "}
-              <em className="text-primary not-italic">Across Borders.</em>{" "}
-              For Decades.
+              Where Healthcare Strategy,{" "}
+              <em className="text-primary not-italic">Technology,</em>{" "}
+              and Policy Converge.
             </motion.h1>
 
             <motion.p
-              className="text-lg md:text-xl text-muted-foreground font-sans max-w-2xl leading-relaxed mb-3"
+              className="text-lg md:text-xl text-muted-foreground font-sans max-w-2xl leading-relaxed mb-10"
               {...fadeIn(0.8)}
             >
-              35+ years building hospital systems, digital health strategies, interoperability standards, and innovation ecosystems across 7 countries.
-            </motion.p>
-
-            <motion.p
-              className="text-base text-muted-foreground/80 font-sans max-w-xl leading-relaxed mb-10"
-              {...fadeIn(1.0)}
-            >
-              Helping healthcare organizations navigate transformation, interoperability, innovation, and sustainable growth.
+              Three decades building hospital systems, national telemedicine programs, and healthcare interoperability standards across seven countries.
             </motion.p>
 
             <motion.div
               className="flex flex-wrap items-center gap-4 mb-16"
-              {...fadeUp(1.2)}
+              {...fadeUp(1.0)}
             >
               <Button
                 size="lg"
@@ -132,8 +124,8 @@ export function Hero() {
 
             {/* Metrics Row */}
             <motion.div
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-border/60"
-              {...fadeIn(1.4)}
+              className="grid grid-cols-3 gap-8 pt-8 border-t border-border/60"
+              {...fadeIn(1.2)}
             >
               {metrics.map((metric, i) => (
                 <MetricItem
@@ -153,9 +145,7 @@ export function Hero() {
               animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ duration: 1.0, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* Decorative offset border */}
               <div className="absolute inset-0 border border-primary/25 translate-x-5 translate-y-5 rounded-sm pointer-events-none" />
-              {/* Portrait container */}
               <div className="absolute inset-0 overflow-hidden bg-muted rounded-sm shadow-2xl">
                 <img
                   src={portraitImg}
@@ -165,7 +155,6 @@ export function Hero() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 via-transparent to-transparent pointer-events-none" />
               </div>
-              {/* Accent bar */}
               <motion.div
                 className="absolute -left-3 top-[10%] bottom-[10%] w-1 bg-accent rounded-full"
                 initial={{ scaleY: 0 }}

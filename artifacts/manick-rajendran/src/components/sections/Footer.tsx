@@ -5,27 +5,33 @@ export function Footer() {
 
   return (
     <footer className="bg-foreground text-background pt-20 pb-8">
-      <div className="container mx-auto px-4 md:px-8">
+      <div className="container mx-auto px-6 md:px-8 max-w-[1440px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
-          
+
           {/* Col 1 */}
           <div className="lg:col-span-4 flex flex-col items-start">
             <div className="flex items-center justify-center w-12 h-12 bg-primary text-primary-foreground rounded mb-6">
               <span className="font-serif font-bold text-xl tracking-wider">MR</span>
             </div>
             <p className="text-muted-foreground leading-relaxed max-w-sm">
-              Healthcare executive and strategic advisor bridging the gap between clinical operations, digital health, and global standards.
+              Healthcare Transformation Leader. Three decades across healthcare systems, digital health, hospital operations, and global standards leadership.
             </p>
           </div>
 
           {/* Col 2 */}
           <div className="lg:col-span-4">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-6">Quick Links</h4>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-6">Navigation</h4>
             <ul className="space-y-3">
-              {['About', 'Experience', 'Expertise', 'Impact', 'Insights'].map((item) => (
-                <li key={item}>
-                  <a href={`#${item.toLowerCase()}`} className="text-muted-foreground hover:text-white transition-colors">
-                    {item}
+              {[
+                { label: 'About', href: '#about' },
+                { label: 'Experience', href: '#experience' },
+                { label: 'Expertise', href: '#expertise' },
+                { label: 'Impact', href: '#impact' },
+                { label: 'Advisory', href: '#advisory' },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-muted-foreground hover:text-white transition-colors">
+                    {item.label}
                   </a>
                 </li>
               ))}
@@ -38,7 +44,8 @@ export function Footer() {
             <ul className="space-y-3 text-muted-foreground mb-8">
               <li>IIM Bangalore Alumni</li>
               <li>HIMSS India Board</li>
-              <li>BIS Chairman (Informatics AYUSH)</li>
+              <li>BIS Chairman — Informatics &amp; AYUSH</li>
+              <li>ISO Delegation Head</li>
             </ul>
             <a href="mailto:manick@manick.com" className="text-white hover:text-primary transition-colors font-medium border-b border-primary/50 pb-1">
               manick@manick.com
