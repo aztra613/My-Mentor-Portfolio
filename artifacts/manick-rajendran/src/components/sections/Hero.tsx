@@ -1,0 +1,182 @@
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useCountUp } from "@/hooks/useCountUp";
+import { useScrollProgress } from "@/hooks/useScrollProgress";
+import { Button } from "@/components/ui/button";
+import portraitImg from "@assets/1711126551904_1782102099986.jfif";
+
+const metrics = [
+  { label: "Years Experience", value: 35, suffix: "+" },
+  { label: "Countries", value: 7, suffix: "+" },
+  { label: "Doctors Impacted", value: 500, suffix: "K+" },
+  { label: "Hospital Beds", value: 2100, suffix: "+" }
+];
+
+function MetricItem({ value, suffix, label, delay = 0 }: { value: number; suffix: string; label: string; delay?: number }) {
+  const [trigger, setTrigger] = useState(false);
+  const count = useCountUp(value, 1800, trigger);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setTrigger(true), delay * 1000 + 1600);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div className="flex flex-col" data-testid={`metric-${label.toLowerCase().replace(/\s+/g, "-")}`}>
+      <div className="font-mono text-3xl md:text-4xl font-semibold text-primary">
+        {count}{suffix}
+      </div>
+      <div className="text-xs font-sans text-muted-foreground uppercase tracking-[0.15em] mt-1.5">
+        {label}
+      </div>
+    </div>
+  );
+}
+
+const fadeUp = (delay: number) => ({
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }
+});
+
+const fadeIn = (delay: number) => ({
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: { duration: 0.7, delay, ease: "easeOut" }
+});
+
+export function Hero() {
+  const scrollProgress = useScrollProgress();
+
+  const scrollToSection = (href: string) => {
+    const element = document.querySelector(href);
+    if (element) {
+      const offset = 80;
+      const elementTop = element.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: elementTop, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <section id="top" className="relative min-h-[100dvh] flex items-center pt-20 overflow-hidden bg-background">
+      {/* Scroll Progress Bar */}
+      <div
+        className="fixed top-0 left-0 h-[3px] bg-primary z-50 origin-left transition-all duration-150"
+        style={{ width: `${scrollProgress * 100}%` }}
+        data-testid="scroll-progress"
+      />
+
+      <div className="container mx-auto px-6 md:px-10 max-w-[1440px]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6 items-center min-h-[calc(100dvh-5rem)] py-16 lg:py-0">
+
+          {/* Left: Typography */}
+          <div className="lg:col-span-7 flex flex-col z-10">
+            <motion.div {...fadeIn(0.2)}>
+              <span className="inline-block text-xs font-sans font-semibold tracking-[0.22em] text-accent uppercase mb-5 border-b border-accent/30 pb-2">
+                Healthcare Transformation Leader
+              </span>
+            </motion.div>
+
+            <motion.p
+              className="text-sm md:text-base font-sans font-medium text-muted-foreground tracking-widest uppercase mb-3"
+              {...fadeUp(0.4)}
+            >
+              Manick Rajendran, BE, MBA
+            </motion.p>
+
+            <motion.h1
+              className="text-4xl md:text-5xl lg:text-[3.6rem] xl:text-[4rem] font-serif font-bold text-foreground leading-[1.08] mb-7 tracking-tight"
+              {...fadeUp(0.6)}
+            >
+              Transforming Healthcare.{" "}
+              <em className="text-primary not-italic">Across Borders.</em>{" "}
+              For Decades.
+            </motion.h1>
+
+            <motion.p
+              className="text-lg md:text-xl text-muted-foreground font-sans max-w-2xl leading-relaxed mb-3"
+              {...fadeIn(0.8)}
+            >
+              35+ years building hospital systems, digital health strategies, interoperability standards, and innovation ecosystems across 7 countries.
+            </motion.p>
+
+            <motion.p
+              className="text-base text-muted-foreground/80 font-sans max-w-xl leading-relaxed mb-10"
+              {...fadeIn(1.0)}
+            >
+              Helping healthcare organizations navigate transformation, interoperability, innovation, and sustainable growth.
+            </motion.p>
+
+            <motion.div
+              className="flex flex-wrap items-center gap-4 mb-16"
+              {...fadeUp(1.2)}
+            >
+              <Button
+                size="lg"
+                className="rounded-full px-8 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5"
+                onClick={() => scrollToSection("#contact")}
+                data-testid="button-schedule-consultation"
+              >
+                Schedule Consultation
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full px-8 h-12 border-border hover:bg-muted font-medium transition-all hover:-translate-y-0.5"
+                onClick={() => scrollToSection("#experience")}
+                data-testid="button-explore-experience"
+              >
+                Explore Experience
+              </Button>
+            </motion.div>
+
+            {/* Metrics Row */}
+            <motion.div
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-border/60"
+              {...fadeIn(1.4)}
+            >
+              {metrics.map((metric, i) => (
+                <MetricItem
+                  key={metric.label}
+                  {...metric}
+                  delay={i * 0.12}
+                />
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right: Portrait */}
+          <div className="lg:col-span-5 relative flex items-center justify-center lg:justify-end mt-8 lg:mt-0">
+            <motion.div
+              className="relative w-full max-w-[440px] aspect-[3/4]"
+              initial={{ opacity: 0, scale: 0.96, x: 20 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ duration: 1.0, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {/* Decorative offset border */}
+              <div className="absolute inset-0 border border-primary/25 translate-x-5 translate-y-5 rounded-sm pointer-events-none" />
+              {/* Portrait container */}
+              <div className="absolute inset-0 overflow-hidden bg-muted rounded-sm shadow-2xl">
+                <img
+                  src={portraitImg}
+                  alt="Manick Rajendran — Healthcare Transformation Leader"
+                  className="w-full h-full object-cover object-top"
+                  data-testid="hero-portrait"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 via-transparent to-transparent pointer-events-none" />
+              </div>
+              {/* Accent bar */}
+              <motion.div
+                className="absolute -left-3 top-[10%] bottom-[10%] w-1 bg-accent rounded-full"
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: 1 }}
+                transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </motion.div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
