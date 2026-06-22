@@ -77,7 +77,7 @@ export function Hero() {
             </motion.div>
 
             <motion.p
-              className="text-sm md:text-base font-sans font-medium text-muted-foreground tracking-widest uppercase mb-3"
+              className="text-lg md:text-2xl font-sans font-bold text-foreground tracking-widest uppercase mb-4"
               {...fadeUp(0.4)}
             >
               Manick Rajendran, BE, MBA

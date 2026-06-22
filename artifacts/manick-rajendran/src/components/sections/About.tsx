@@ -75,11 +75,7 @@ export function About() {
                   <p className="text-muted-foreground">MBA, IIM Bangalore (1986)</p>
                   <p className="text-muted-foreground">BE Mechanical, College of Engineering, Chennai (1984)</p>
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold text-foreground uppercase tracking-wider mb-1">Contact</h4>
-                  <p className="text-muted-foreground">manick@manick.com</p>
-                  <p className="text-muted-foreground">+1 (609) 975-9085</p>
-                </div>
+
               </div>
             </div>
           </motion.div>

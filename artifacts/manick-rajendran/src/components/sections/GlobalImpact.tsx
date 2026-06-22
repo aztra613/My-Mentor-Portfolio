@@ -1,55 +1,60 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
+
+const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
 const LOCATIONS = [
   {
     id: "india",
     name: "India",
-    x: "71%",
-    y: "47%",
+    coordinates: [78.9629, 20.5937] as [number, number],
     highlights: ["Hospital CEO — 2,100-bed facility", "National Telemedicine Initiative", "BIS Chairman — Informatics AYUSH", "500,000 doctors trained", "Punjab Govt healthcare roadmap", "HIMSS India Board Member"],
     tag: "Primary Base"
   },
   {
     id: "usa",
     name: "United States",
-    x: "22%",
-    y: "36%",
+    coordinates: [-95.7129, 37.0902] as [number, number],
     highlights: ["VP, Deutsche Bank — Retirement Services", "VP, Bankers Trust", "Co-Founder & CEO, MedAZ (EMR startup)", "CEO, Medical Billing Company, NYC", "HITSP Co-Chairman", "CCHIT Interoperability Workgroup"],
     tag: "Career Foundation"
   },
   {
     id: "sweden",
     name: "Sweden",
-    x: "51%",
-    y: "20%",
+    coordinates: [18.6435, 60.1282] as [number, number],
     highlights: ["ISO Delegation Head", "Standards meetings — Gothenburg", "Healthcare interoperability frameworks"],
     tag: "Standards Work"
   },
   {
     id: "korea",
     name: "South Korea",
-    x: "80%",
-    y: "36%",
+    coordinates: [127.7669, 35.9078] as [number, number],
     highlights: ["ISO Delegation Head", "Standards meetings — Daegu", "Digital health policy discussions"],
     tag: "Standards Work"
   },
   {
     id: "tanzania",
     name: "Tanzania",
-    x: "58%",
-    y: "57%",
+    coordinates: [34.8888, -6.3690] as [number, number],
     highlights: ["Cardiac telemedicine platform deployment", "Founder — Cardiac Advisory Company", "ECG-to-cardiologist digital transmission", "Rural hospital network support"],
     tag: "Telemedicine"
   },
   {
     id: "malawi",
     name: "Malawi",
-    x: "58%",
-    y: "64%",
+    coordinates: [34.3015, -13.2543] as [number, number],
     highlights: ["Cardiac telemedicine platform deployment", "Founder — Cardiac Advisory Company", "Multi-specialty telemedicine services"],
     tag: "Telemedicine"
   }
+];
+
+const CONNECTIONS = [
+  { from: [-95.7129, 37.0902], to: [78.9629, 20.5937], color: "hsl(var(--primary))", delay: 0.8, duration: 2 },
+  { from: [78.9629, 20.5937], to: [34.8888, -6.3690], color: "hsl(var(--accent))", delay: 1.5, duration: 1.5 },
+  { from: [78.9629, 20.5937], to: [34.3015, -13.2543], color: "hsl(var(--accent))", delay: 1.8, duration: 1.5 },
+  { from: [-95.7129, 37.0902], to: [18.6435, 60.1282], color: "hsl(var(--secondary))", delay: 2, duration: 1.5 },
+  { from: [-95.7129, 37.0902], to: [127.7669, 35.9078], color: "hsl(var(--secondary))", delay: 1.2, duration: 2 },
 ];
 
 const TAG_COLORS: Record<string, string> = {
@@ -96,40 +101,92 @@ export function GlobalImpact() {
               className="absolute inset-0 opacity-[0.06]"
               style={{ backgroundImage: "radial-gradient(circle at 1px 1px, hsl(var(--primary)) 1px, transparent 0)", backgroundSize: "20px 20px" }}
             />
-            {/* SVG connection lines */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <motion.path d="M 22 36 Q 45 15 71 47" fill="none" stroke="hsl(var(--primary))" strokeWidth="0.4" strokeDasharray="1.5 1.5" initial={{ pathLength: 0 }} animate={inView ? { pathLength: 1 } : {}} transition={{ duration: 2, delay: 0.8 }} />
-              <motion.path d="M 71 47 Q 65 52 58 57" fill="none" stroke="hsl(var(--accent))" strokeWidth="0.4" strokeDasharray="1.5 1.5" initial={{ pathLength: 0 }} animate={inView ? { pathLength: 1 } : {}} transition={{ duration: 1.5, delay: 1.5 }} />
-              <motion.path d="M 71 47 Q 65 55 58 64" fill="none" stroke="hsl(var(--accent))" strokeWidth="0.4" strokeDasharray="1.5 1.5" initial={{ pathLength: 0 }} animate={inView ? { pathLength: 1 } : {}} transition={{ duration: 1.5, delay: 1.8 }} />
-              <motion.path d="M 22 36 Q 35 25 51 20" fill="none" stroke="hsl(var(--secondary))" strokeWidth="0.4" strokeDasharray="1.5 1.5" initial={{ pathLength: 0 }} animate={inView ? { pathLength: 1 } : {}} transition={{ duration: 1.5, delay: 2 }} />
-              <motion.path d="M 22 36 Q 50 20 80 36" fill="none" stroke="hsl(var(--secondary))" strokeWidth="0.4" strokeDasharray="1.5 1.5" initial={{ pathLength: 0 }} animate={inView ? { pathLength: 1 } : {}} transition={{ duration: 2, delay: 1.2 }} />
-            </svg>
-
-            {/* Country labels on map */}
-            {LOCATIONS.map((loc, i) => (
-              <motion.button
-                key={loc.id}
-                className="absolute -translate-x-1/2 -translate-y-1/2 group z-10 flex flex-col items-center"
-                style={{ left: loc.x, top: loc.y }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={inView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.4, delay: 0.6 + i * 0.1 }}
-                onClick={() => setActive(loc)}
-                onMouseEnter={() => setActive(loc)}
-                data-testid={`map-marker-${loc.id}`}
+            
+            <div className="absolute inset-0 flex items-center justify-center p-4 pt-12">
+              <ComposableMap
+                projection="geoEquirectangular"
+                projectionConfig={{
+                  scale: 280,
+                  center: [10, 25]
+                }}
+                className="w-full h-full cursor-grab active:cursor-grabbing"
               >
-                {/* Pulse rings */}
-                <motion.span
-                  className={`absolute w-5 h-5 rounded-full ${active.id === loc.id ? "border-accent" : "border-primary"} border`}
-                  animate={{ scale: [1, 1.8, 1], opacity: [0.8, 0, 0.8] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <span className={`w-3 h-3 rounded-full shadow-sm transition-all duration-200 ${active.id === loc.id ? "bg-accent scale-125" : "bg-primary group-hover:bg-accent group-hover:scale-110"}`} />
-                <span className={`mt-1 text-[9px] font-bold uppercase tracking-wide whitespace-nowrap transition-colors ${active.id === loc.id ? "text-accent" : "text-foreground/50 group-hover:text-foreground"}`}>
-                  {loc.name === "United States" ? "USA" : loc.name}
-                </span>
-              </motion.button>
-            ))}
+                <ZoomableGroup zoom={1} minZoom={0.5} maxZoom={4} center={[0, 0]}>
+                  <Geographies geography={geoUrl}>
+                  {({ geographies }) =>
+                    geographies.map((geo) => (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill="hsl(var(--foreground)/0.05)"
+                        stroke="hsl(var(--foreground)/0.15)"
+                        strokeWidth={0.5}
+                        style={{
+                          default: { outline: "none" },
+                          hover: { outline: "none", fill: "hsl(var(--foreground)/0.1)" },
+                          pressed: { outline: "none" },
+                        }}
+                      />
+                    ))
+                  }
+                </Geographies>
+
+                {/* Connections */}
+                {CONNECTIONS.map((conn, idx) => (
+                  <Line
+                    key={`line-${idx}`}
+                    from={conn.from as [number, number]}
+                    to={conn.to as [number, number]}
+                    stroke={conn.color}
+                    strokeWidth={1.5}
+                    strokeLinecap="round"
+                    strokeDasharray="4 4"
+                    className="opacity-50"
+                  />
+                ))}
+
+                {/* Markers */}
+                {LOCATIONS.map((loc, i) => (
+                  <Marker
+                    key={loc.id}
+                    coordinates={loc.coordinates}
+                    onClick={() => setActive(loc)}
+                    onMouseEnter={() => setActive(loc)}
+                    className="cursor-pointer outline-none"
+                  >
+                    <motion.g
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={inView ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ duration: 0.4, delay: 0.6 + i * 0.1 }}
+                    >
+                      {/* Pulse rings */}
+                      <circle
+                        r={12}
+                        fill="none"
+                        stroke={active.id === loc.id ? "hsl(var(--accent))" : "hsl(var(--primary))"}
+                        strokeWidth={1}
+                        className="animate-ping opacity-75"
+                        style={{ animationDuration: '3s' }}
+                      />
+                      <circle
+                        r={active.id === loc.id ? 6 : 4}
+                        fill={active.id === loc.id ? "hsl(var(--accent))" : "hsl(var(--primary))"}
+                        className="transition-all duration-300"
+                      />
+                      <text
+                        textAnchor="middle"
+                        y={active.id === loc.id ? -12 : -8}
+                        style={{ fontFamily: "system-ui", fill: active.id === loc.id ? "hsl(var(--accent))" : "hsl(var(--foreground))" }}
+                        className={`text-[8px] font-bold uppercase tracking-wide transition-colors ${active.id === loc.id ? 'opacity-100' : 'opacity-50'}`}
+                      >
+                        {loc.name === "United States" ? "USA" : loc.name}
+                      </text>
+                    </motion.g>
+                  </Marker>
+                ))}
+                </ZoomableGroup>
+              </ComposableMap>
+            </div>
           </motion.div>
 
           {/* Info Panel */}
@@ -175,3 +232,4 @@ export function GlobalImpact() {
     </section>
   );
 }
+

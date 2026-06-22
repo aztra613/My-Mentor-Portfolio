@@ -77,10 +77,10 @@ export function Header() {
           className="flex items-center gap-3 group z-50"
           data-testid="link-logo"
         >
-          <div className="flex items-center justify-center w-9 h-9 bg-primary text-primary-foreground rounded-sm group-hover:bg-secondary transition-colors duration-200 shadow-sm">
-            <span className="font-serif font-bold text-base tracking-wider">MR</span>
+          <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-sm group-hover:bg-secondary transition-colors duration-200 shadow-sm">
+            <span className="font-serif font-bold text-lg tracking-wider">MR</span>
           </div>
-          <span className="font-sans font-semibold text-base text-foreground tracking-tight hidden sm:block">
+          <span className="font-sans font-bold text-lg md:text-xl text-foreground tracking-tight hidden sm:block">
             Manick Rajendran
           </span>
         </a>

@@ -36,7 +36,7 @@ export function Advisory() {
               How to Engage
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mt-2 mb-4">
-              Available For
+              Areas of Engagement
             </h2>
             <div className="w-12 h-1 bg-primary" />
           </div>
