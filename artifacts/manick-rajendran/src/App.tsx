@@ -1,3 +1,4 @@
+import { LoadingScreen } from "@/components/LoadingScreen";
 import { Header } from "@/components/sections/Header";
 import { Hero } from "@/components/sections/Hero";
 import { CurrentRoles } from "@/components/sections/CurrentRoles";
@@ -10,15 +11,16 @@ import { Achievements } from "@/components/sections/Achievements";
 import { LegacyImpact } from "@/components/sections/LegacyImpact";
 import { Standards } from "@/components/sections/Standards";
 import { Mentorship } from "@/components/sections/Mentorship";
+import { Philosophy } from "@/components/sections/Philosophy";
 import { Insights } from "@/components/sections/Insights";
 import { Advisory } from "@/components/sections/Advisory";
-import { Testimonials } from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 
 function App() {
   return (
     <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary selection:text-primary-foreground">
+      <LoadingScreen />
       <Header />
       <main>
         <Hero />
@@ -32,9 +34,9 @@ function App() {
         <LegacyImpact />
         <Standards />
         <Mentorship />
+        <Philosophy />
         <Insights />
         <Advisory />
-        <Testimonials />
         <Contact />
       </main>
       <Footer />

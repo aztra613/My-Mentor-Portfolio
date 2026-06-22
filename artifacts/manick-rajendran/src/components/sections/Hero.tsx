@@ -115,9 +115,9 @@ export function Hero() {
                 size="lg"
                 className="rounded-full px-8 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5"
                 onClick={() => scrollToSection("#contact")}
-                data-testid="button-schedule-consultation"
+                data-testid="button-executive-inquiry"
               >
-                Schedule Consultation
+                Executive Inquiry
               </Button>
               <Button
                 size="lg"

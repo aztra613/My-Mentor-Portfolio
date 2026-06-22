@@ -114,7 +114,7 @@ export function Header() {
             className="ml-2 rounded-full px-6 h-9 text-sm font-medium bg-primary hover:bg-secondary transition-colors duration-200 shadow-sm"
             data-testid="btn-nav-contact"
           >
-            Schedule Consultation
+            Executive Inquiry
           </Button>
         </nav>
 
@@ -154,7 +154,7 @@ export function Header() {
                     onClick={(e) => scrollTo(e as any, "#contact")}
                     className="w-full rounded-full bg-primary h-14 text-lg"
                   >
-                    Schedule Consultation
+                    Executive Inquiry
                   </Button>
                 </div>
               </nav>
